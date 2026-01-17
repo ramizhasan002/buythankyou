@@ -1,20 +1,361 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-    .btn-home {
-        border: 1px solid black;
-        margin: 10px;
+
+    .container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 500px;
+        width: 90%;
+        margin: 60px auto;
+    }
+
+    h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .subtitle {
+        color: #86868b;
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .amount-section {
+        margin-bottom: 24px;
+    }
+
+    .section-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .preset-amounts {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .preset-btn {
+        background: #f5f5f7;
+        border: 2px solid #e5e5e7;
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1d1d1f;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .preset-btn:hover {
+        background: #e8e8ed;
+    }
+
+    .preset-btn.active {
+        background: #ffd700;
+        color: #1d1d1f;
+        border-color: #ffd700;
+    }
+
+    .custom-amount {
+        margin-top: 16px;
+    }
+
+    .custom-amount label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #86868b;
+        margin-bottom: 8px;
+    }
+
+    .amount-input-wrapper {
+        position: relative;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        font-weight: 600;
+        color: #1d1d1f;
+    }
+
+    .amount-input {
+        width: 100%;
+        padding: 16px 16px 16px 40px;
+        font-size: 18px;
+        font-weight: 600;
+        border: 2px solid #e5e5e7;
+        border-radius: 12px;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .amount-input:focus {
+        border-color: #ffd700;
+    }
+
+    .error-message {
+        color: #ff3b30;
+        font-size: 12px;
+        margin-top: 8px;
+        display: none;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+    .pay-btn {
+        width: 100%;
+        background: #ffd700;
+        color: #1d1d1f;
+        border: none;
+        border-radius: 30px;
+        padding: 18px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 24px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .pay-btn:hover {
+        background: #ffed4e;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    }
+
+    .pay-btn:active {
+        transform: translateY(0);
+    }
+
+    .pay-btn:disabled {
+        background: #d1d1d6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .qr-section {
+        margin-top: 32px;
+        text-align: center;
+        display: none;
+    }
+
+    .qr-section.show {
+        display: block;
+    }
+
+    #qrcode {
+        display: inline-block;
+        padding: 20px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .qr-instruction {
+        margin-top: 16px;
+        color: #86868b;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .qr-amount {
+        font-weight: 600;
+        color: #1d1d1f;
+    }
+
+    @media (max-width: 480px) {
+        .header {
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 20px;
+        }
+
+        .container {
+            padding: 30px 24px;
+            margin: 30px auto;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .preset-amounts {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .preset-btn {
+            padding: 14px;
+            font-size: 16px;
+        }
     }
 </style>
-<main>
-    <div class="payment-box">
 
-        <h2>Website is under progress.</h2>
-        <a href="/" class="btn btn-help btn-home">Home</a>
+<div class="container">
+    <h1>Buy Thank You</h1>
+    <p class="subtitle">Support with a thank you payment</p>
 
+    <div class="amount-section">
+        <div class="section-label">Select Amount</div>
+        <div class="preset-amounts">
+            <button class="preset-btn" data-amount="1">₹1</button>
+            <button class="preset-btn" data-amount="10">₹10</button>
+            <button class="preset-btn" data-amount="100">₹100</button>
+            <button class="preset-btn" data-amount="1000">₹1000</button>
+        </div>
+
+        <div class="custom-amount">
+            <label for="customAmount">Or enter custom amount</label>
+            <div class="amount-input-wrapper">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="customAmount" class="amount-input" placeholder="0" min="1" step="1">
+            </div>
+            <div class="error-message" id="errorMessage">
+                Minimum amount is ₹1
+            </div>
+        </div>
     </div>
-</main>
 
+    <button class="pay-btn" id="payBtn">Pay Now</button>
 
+    <div class="qr-section" id="qrSection">
+        <div id="qrcode"></div>
+        <p class="qr-instruction">
+            Scan this QR code from any UPI app to pay<br>
+            <span class="qr-amount" id="qrAmount">₹0</span>
+        </p>
+    </div>
+</div>
+
+<script>
+    const UPI_ID = 'ramizhasan002@ybl';
+    const UPI_NAME = 'Buy Thank You';
+
+    let selectedAmount = 0;
+    let qrCodeInstance = null;
+
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const customAmountInput = document.getElementById('customAmount');
+    const payBtn = document.getElementById('payBtn');
+    const errorMessage = document.getElementById('errorMessage');
+    const qrSection = document.getElementById('qrSection');
+    const qrAmount = document.getElementById('qrAmount');
+
+    // Preset amount selection
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const amount = parseInt(btn.dataset.amount);
+            selectedAmount = amount;
+
+            // Update UI
+            presetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            customAmountInput.value = '';
+            errorMessage.classList.remove('show');
+
+            updateQRCode();
+        });
+    });
+
+    // Custom amount input
+    customAmountInput.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value) || 0;
+        selectedAmount = value;
+
+        // Clear preset selection
+        presetBtns.forEach(b => b.classList.remove('active'));
+
+        // Validate
+        if (value > 0 && value < 1) {
+            errorMessage.classList.add('show');
+        } else {
+            errorMessage.classList.remove('show');
+        }
+
+        updateQRCode();
+    });
+
+    // Generate UPI link
+    function generateUPILink(amount) {
+        const amountFormatted = amount.toFixed(2);
+        const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}&am=${encodeURIComponent(amountFormatted)}&cu=INR&tn=${encodeURIComponent(UPI_NAME)}`;
+        return upiLink;
+    }
+
+    // Update QR code
+    function updateQRCode() {
+        if (selectedAmount >= 1) {
+            const upiLink = generateUPILink(selectedAmount);
+
+            // Clear previous QR code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            // Generate new QR code
+            qrCodeInstance = new QRCode(qrContainer, {
+                text: upiLink,
+                width: 200,
+                height: 200,
+                colorDark: "#1d1d1f",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            qrAmount.textContent = `₹${selectedAmount.toFixed(2)}`;
+        }
+    }
+
+    // Detect device type
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    // Pay button click
+    payBtn.addEventListener('click', () => {
+        if (selectedAmount < 1) {
+            errorMessage.classList.add('show');
+            customAmountInput.focus();
+            return;
+        }
+
+        const upiLink = generateUPILink(selectedAmount);
+
+        if (isMobileDevice()) {
+            // Mobile: Open UPI app
+            window.location.href = upiLink;
+        } else {
+            // Desktop: Show QR code
+            qrSection.classList.add('show');
+            qrSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+
+    // Initialize with first preset amount
+    presetBtns[0].click();
+</script>
 {% endblock %}
