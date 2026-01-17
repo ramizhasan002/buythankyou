@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
     .container {
@@ -185,6 +184,128 @@
         color: #1d1d1f;
     }
 
+    .terms-section {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #e5e5e7;
+    }
+
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #ffd700;
+    }
+
+    .checkbox-label {
+        font-size: 13px;
+        color: #1d1d1f;
+        line-height: 1.5;
+    }
+
+    .checkbox-label a {
+        color: #1d1d1f;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+
+    .checkbox-label a:hover {
+        color: #ffd700;
+    }
+
+    .policies-links {
+        display: none;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 22px;
+        color: #1d1d1f;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #86868b;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-btn:hover {
+        color: #1d1d1f;
+    }
+
+    .modal-content h3 {
+        font-size: 16px;
+        color: #1d1d1f;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .modal-content p,
+    .modal-content ul {
+        font-size: 14px;
+        color: #1d1d1f;
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+
+    .modal-content ul {
+        padding-left: 20px;
+    }
+
+    .modal-content li {
+        margin-bottom: 8px;
+    }
+
     @media (max-width: 480px) {
         .header {
             padding: 15px 20px;
@@ -215,6 +336,7 @@
     }
 </style>
 
+
 <div class="container">
     <h1>Buy Thank You</h1>
     <p class="subtitle">Support with a thank you payment</p>
@@ -225,7 +347,7 @@
             <button class="preset-btn" data-amount="1">₹1</button>
             <button class="preset-btn" data-amount="10">₹10</button>
             <button class="preset-btn" data-amount="100">₹100</button>
-            <button class="preset-btn" data-amount="1000">₹1000</button>
+            <button class="preset-btn" data-amount="100">₹1000</button>
         </div>
 
         <div class="custom-amount">
@@ -240,13 +362,143 @@
         </div>
     </div>
 
-    <button class="pay-btn" id="payBtn">Pay Now</button>
+    <button class="pay-btn" id="payBtn" disabled>Pay Now</button>
+
+    <div class="terms-section">
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="termsCheckbox">
+            <label for="termsCheckbox" class="checkbox-label">
+                I agree to the <a href="#" id="policyLink">Terms & Policy</a>
+            </label>
+        </div>
+    </div>
 
     <div class="qr-section" id="qrSection">
         <div id="qrcode"></div>
         <p class="qr-instruction">
             Scan this QR code from any UPI app to pay<br>
             <span class="qr-amount" id="qrAmount">₹0</span>
+        </p>
+    </div>
+</div>
+
+<!-- Policy Modal -->
+<div class="modal" id="policyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Terms & Policy</h2>
+            <button class="close-btn" onclick="closeModal('policyModal')">&times;</button>
+        </div>
+        <p><strong>Last Updated: January 2026</strong></p>
+
+        <h3>1. Terms & Conditions</h3>
+
+        <p><strong>Service Description:</strong> Buy Thank You is a platform that allows users to buy monetary
+            appreciation ("Thank You") to content creators, service providers, or individuals.</p>
+
+        <p><strong>Payment Terms:</strong></p>
+        <ul>
+            <li>All payments are processed through secure payment gateways</li>
+            <li>Minimum payment amount is ₹1</li>
+            <li>Payments are final once processed</li>
+            <li>You will receive a payment confirmation via email</li>
+        </ul>
+
+        <p><strong>User Responsibilities:</strong></p>
+        <ul>
+            <li>Provide accurate payment information</li>
+            <li>Ensure you have authorization to use the payment method</li>
+            <li>Use the service for legitimate appreciation purposes only</li>
+        </ul>
+
+        <p><strong>Prohibited Activities:</strong></p>
+        <ul>
+            <li>Fraudulent transactions</li>
+            <li>Money laundering or illegal activities</li>
+            <li>Harassment or inappropriate messages</li>
+        </ul>
+
+        <p><strong>Limitation of Liability:</strong> Buy Thank You is not responsible for disputes between payers
+            and recipients. We act solely as a payment facilitator.</p>
+
+        <h3>2. Privacy Policy</h3>
+
+        <p><strong>Information We Collect:</strong></p>
+        <ul>
+            <li><strong>Payment Information:</strong> Transaction amount, payment method, timestamp</li>
+            <li><strong>Contact Information:</strong> Email address (if provided)</li>
+            <li><strong>Usage Data:</strong> IP address, browser type, device information</li>
+        </ul>
+
+        <p><strong>How We Use Your Information:</strong></p>
+        <ul>
+            <li>Process your payments</li>
+            <li>Send payment confirmations</li>
+            <li>Prevent fraud and ensure security</li>
+            <li>Improve our service</li>
+        </ul>
+
+        <p><strong>Information Sharing:</strong></p>
+        <ul>
+            <li>We share payment details with the recipient of your "Thank You"</li>
+            <li>We use third-party payment processors (secure and compliant)</li>
+            <li>We do NOT sell your personal information</li>
+        </ul>
+
+        <p><strong>Data Security:</strong> We use industry-standard encryption and security measures to protect your
+            data. Payment information is handled by PCI-DSS compliant payment processors.</p>
+
+        <p><strong>Your Rights:</strong> You have the right to access, correct, or delete your personal information.
+            Contact us at support@buythankyou.com for requests.</p>
+
+        <h3>3. Refund & Cancellation Policy</h3>
+
+        <p><strong>General Policy:</strong> All payments made through Buy Thank You are considered final and
+            non-refundable, as they represent voluntary appreciation payments.</p>
+
+        <p><strong>Refund Exceptions:</strong> Refunds may be issued in the following cases:</p>
+        <ul>
+            <li><strong>Technical Errors:</strong> If a payment was processed multiple times due to a technical
+                error</li>
+            <li><strong>Unauthorized Transactions:</strong> If you can prove the transaction was unauthorized</li>
+            <li><strong>Payment Gateway Errors:</strong> If the payment failed but amount was deducted</li>
+        </ul>
+
+        <p><strong>Refund Process:</strong></p>
+        <ul>
+            <li>Contact us at support@buythankyou.com within 7 days of the transaction</li>
+            <li>Provide transaction details (ID, amount, date, screenshot)</li>
+            <li>We will review within 3-5 business days</li>
+            <li>Approved refunds will be processed within 7-10 business days</li>
+            <li>Refunds will be credited to the original payment method</li>
+        </ul>
+
+        <p><strong>Non-Refundable Situations:</strong></p>
+        <ul>
+            <li>Change of mind after successful payment</li>
+            <li>Dispute with the recipient</li>
+            <li>Incorrect amount selected (user error)</li>
+        </ul>
+
+        <h3>4. Return Policy</h3>
+
+        <p><strong>Nature of Service:</strong> Buy Thank You is a digital payment service for sending monetary
+            appreciation. Since this is a service-based platform and not a product marketplace, traditional
+            "returns" do not apply.</p>
+
+        <p><strong>What This Means:</strong></p>
+        <ul>
+            <li>There are no physical products to return</li>
+            <li>Payments are digital transactions, not purchasable goods</li>
+            <li>Once a "Thank You" payment is sent, it cannot be "returned" in the traditional sense</li>
+        </ul>
+
+        <p><strong>For Issues:</strong> If you have concerns about a transaction, please refer to our Refund Policy
+            above or contact support@buythankyou.com</p>
+
+        <h3>5. Contact Us</h3>
+        <p>For any questions, concerns, or support requests, please contact us at:<br>
+            <strong>Email:</strong> support@buythankyou.com
         </p>
     </div>
 </div>
@@ -264,6 +516,12 @@
     const errorMessage = document.getElementById('errorMessage');
     const qrSection = document.getElementById('qrSection');
     const qrAmount = document.getElementById('qrAmount');
+    const termsCheckbox = document.getElementById('termsCheckbox');
+
+    // Enable/disable pay button based on terms checkbox
+    termsCheckbox.addEventListener('change', (e) => {
+        payBtn.disabled = !e.target.checked || selectedAmount < 1;
+    });
 
     // Preset amount selection
     presetBtns.forEach(btn => {
@@ -276,6 +534,7 @@
             btn.classList.add('active');
             customAmountInput.value = '';
             errorMessage.classList.remove('show');
+            payBtn.disabled = !termsCheckbox.checked;
 
             updateQRCode();
         });
@@ -292,8 +551,10 @@
         // Validate
         if (value > 0 && value < 1) {
             errorMessage.classList.add('show');
+            payBtn.disabled = true;
         } else {
             errorMessage.classList.remove('show');
+            payBtn.disabled = !termsCheckbox.checked || value < 1;
         }
 
         updateQRCode();
@@ -342,6 +603,15 @@
             return;
         }
 
+        if (!termsCheckbox.checked) {
+            alert('Please agree to the Terms & Conditions to proceed');
+            return;
+        }
+
+        // TODO: Integrate payment gateway here
+        // For now, we'll keep the UPI functionality
+        // Replace this section with your payment gateway integration
+
         const upiLink = generateUPILink(selectedAmount);
 
         if (isMobileDevice()) {
@@ -352,9 +622,45 @@
             qrSection.classList.add('show');
             qrSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+
+        // PAYMENT GATEWAY INTEGRATION POINT:
+        // Replace the above code with something like:
+        // initiatePaymentGateway(selectedAmount);
+    });
+
+    // Function to integrate payment gateway (placeholder)
+    function initiatePaymentGateway(amount) {
+        // Example for Razorpay, Stripe, or other gateways:
+        // 1. Call your backend API to create payment order
+        // 2. Get order ID and payment details
+        // 3. Open payment gateway popup/redirect
+        // 4. Handle success/failure callbacks
+
+        console.log('Payment gateway will be integrated here for amount:', amount);
+    }
+
+    // Modal functions
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Policy link
+    document.getElementById('policyLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('policyModal').classList.add('show');
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('policyModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('policyModal')) {
+            closeModal('policyModal');
+        }
     });
 
     // Initialize with first preset amount
     presetBtns[0].click();
 </script>
+</body>
+
+</html>
 {% endblock %}
