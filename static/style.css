@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     background: oklch(0.92 0 340);
     min-height: 100vh;
     color: oklch(0.15 0 340);
@@ -24,7 +24,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    
+
 }
 
 .logo {
@@ -65,7 +65,7 @@ header {
 .btn-primary {
     background: #ffd60a;
     color: oklch(0.15 0 340);
-    
+
 }
 
 .btn-primary:hover {
@@ -143,7 +143,7 @@ h1 {
     border-radius: 50px;
     transition: all 0.2s ease;
     letter-spacing: 2px;
-    
+
 }
 
 .btn-cta:hover {
@@ -153,6 +153,52 @@ h1 {
 .btn-cta:active {
     transform: scale(0.98);
 }
+
+
+.footer {
+    background: white;
+    padding: 40px;
+    margin-top: 60px;
+    text-align: center;
+    border-top: 1px solid #e5e5e7;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer h3 {
+    font-size: 18px;
+    color: #1d1d1f;
+    margin-bottom: 12px;
+}
+
+.footer p {
+    color: #86868b;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.footer-links a {
+    color: #1d1d1f;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.footer-links a:hover {
+    color: #ffd700;
+}
+
 
 @media (max-width: 768px) {
     header {
@@ -175,11 +221,15 @@ h1 {
     .highlight {
         font-size: 4rem;
         white-space: nowrap;
-        
+
     }
 
     .btn-cta {
         padding: 1rem 3rem;
         font-size: 1.2rem;
+    }
+
+    .footer {
+        padding: 30px 20px;
     }
 }

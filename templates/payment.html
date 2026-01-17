@@ -2,665 +2,555 @@
 
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
-    .container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 40px;
-        max-width: 500px;
-        width: 90%;
-        margin: 60px auto;
-    }
-
-    h1 {
-        font-size: 28px;
-        font-weight: 600;
-        color: #1d1d1f;
-        margin-bottom: 8px;
-        text-align: center;
-    }
-
-    .subtitle {
-        color: #86868b;
-        font-size: 14px;
-        text-align: center;
-        margin-bottom: 32px;
-    }
-
-    .amount-section {
-        margin-bottom: 24px;
-    }
-
-    .section-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #1d1d1f;
-        margin-bottom: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .preset-amounts {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-
-    .preset-btn {
-        background: #f5f5f7;
-        border: 2px solid #e5e5e7;
-        border-radius: 12px;
-        padding: 16px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #1d1d1f;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .preset-btn:hover {
-        background: #e8e8ed;
-    }
-
-    .preset-btn.active {
-        background: #ffd700;
-        color: #1d1d1f;
-        border-color: #ffd700;
-    }
-
-    .custom-amount {
-        margin-top: 16px;
-    }
-
-    .custom-amount label {
-        display: block;
-        font-size: 13px;
-        font-weight: 500;
-        color: #86868b;
-        margin-bottom: 8px;
-    }
-
-    .amount-input-wrapper {
-        position: relative;
-    }
-
-    .currency-symbol {
-        position: absolute;
-        left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 18px;
-        font-weight: 600;
-        color: #1d1d1f;
-    }
-
-    .amount-input {
-        width: 100%;
-        padding: 16px 16px 16px 40px;
-        font-size: 18px;
-        font-weight: 600;
-        border: 2px solid #e5e5e7;
-        border-radius: 12px;
-        outline: none;
-        transition: all 0.2s ease;
-    }
-
-    .amount-input:focus {
-        border-color: #ffd700;
-    }
-
-    .error-message {
-        color: #ff3b30;
-        font-size: 12px;
-        margin-top: 8px;
-        display: none;
-    }
-
-    .error-message.show {
-        display: block;
-    }
-
-    .pay-btn {
-        width: 100%;
-        background: #ffd700;
-        color: #1d1d1f;
-        border: none;
-        border-radius: 30px;
-        padding: 18px;
-        font-size: 17px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        margin-top: 24px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .pay-btn:hover {
-        background: #ffed4e;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
-    }
-
-    .pay-btn:active {
-        transform: translateY(0);
-    }
-
-    .pay-btn:disabled {
-        background: #d1d1d6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .qr-section {
-        margin-top: 32px;
-        text-align: center;
-        display: none;
-    }
-
-    .qr-section.show {
-        display: block;
-    }
-
-    #qrcode {
-        display: inline-block;
-        padding: 20px;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .qr-instruction {
-        margin-top: 16px;
-        color: #86868b;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    .qr-amount {
-        font-weight: 600;
-        color: #1d1d1f;
-    }
-
-    .terms-section {
-        margin-top: 24px;
-        padding-top: 24px;
-        border-top: 1px solid #e5e5e7;
-    }
-
-    .checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
-    }
-
-    .checkbox-wrapper input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        accent-color: #ffd700;
-    }
-
-    .checkbox-label {
-        font-size: 13px;
-        color: #1d1d1f;
-        line-height: 1.5;
-    }
-
-    .checkbox-label a {
-        color: #1d1d1f;
-        text-decoration: underline;
-        font-weight: 500;
-    }
-
-    .checkbox-label a:hover {
-        color: #ffd700;
-    }
-
-    .policies-links {
-        display: none;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        overflow-y: auto;
-    }
-
-    .modal.show {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    .modal-content {
-        background: white;
-        border-radius: 12px;
-        padding: 30px;
-        max-width: 600px;
-        width: 100%;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .modal-header h2 {
-        font-size: 22px;
-        color: #1d1d1f;
-    }
-
-    .close-btn {
-        background: none;
-        border: none;
-        font-size: 28px;
-        cursor: pointer;
-        color: #86868b;
-        padding: 0;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .close-btn:hover {
-        color: #1d1d1f;
-    }
-
-    .modal-content h3 {
-        font-size: 16px;
-        color: #1d1d1f;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
-
-    .modal-content p,
-    .modal-content ul {
-        font-size: 14px;
-        color: #1d1d1f;
-        line-height: 1.6;
-        margin-bottom: 12px;
-    }
-
-    .modal-content ul {
-        padding-left: 20px;
-    }
-
-    .modal-content li {
-        margin-bottom: 8px;
-    }
-
-    @media (max-width: 480px) {
-        .header {
-            padding: 15px 20px;
-        }
-
-        .logo {
-            font-size: 20px;
-        }
-
         .container {
-            padding: 30px 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
             margin: 30px auto;
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #86868b;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .amount-section {
+            margin-bottom: 24px;
+        }
+
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .preset-amounts {
+            display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .preset-btn {
-            padding: 14px;
-            font-size: 16px;
+            background: #f5f5f7;
+            border: 2px solid #e5e5e7;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-    }
-</style>
+
+        .preset-btn:hover {
+            background: #e8e8ed;
+        }
+
+        .preset-btn.active {
+            background: #ffd700;
+            color: #1d1d1f;
+            border-color: #ffd700;
+        }
+
+        .custom-amount {
+            margin-top: 16px;
+        }
+
+        .custom-amount label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #86868b;
+            margin-bottom: 8px;
+        }
+
+        .amount-input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 16px 16px 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid #e5e5e7;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .amount-input:focus {
+            border-color: #ffd700;
+        }
+
+        .error-message {
+            color: #ff3b30;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .pay-btn {
+            width: 100%;
+            background: #ffd700;
+            color: #1d1d1f;
+            border: none;
+            border-radius: 30px;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pay-btn:hover {
+            background: #ffed4e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .pay-btn:active {
+            transform: translateY(0);
+        }
+
+        .pay-btn:disabled {
+            background: #d1d1d6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .qr-section {
+            margin-top: 32px;
+            text-align: center;
+            display: none;
+        }
+
+        .qr-section.show {
+            display: block;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-instruction {
+            margin-top: 16px;
+            color: #86868b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .qr-amount {
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .terms-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e5e7;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #ffd700;
+            flex-shrink: 0;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            color: #1d1d1f;
+            line-height: 1.5;
+        }
+
+        .checkbox-label a {
+            color: #1d1d1f;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .checkbox-label a:hover {
+            color: #ffd700;
+        }
+
+        .policy-links-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+            font-size: 12px;
+        }
+
+        .policy-links-footer a {
+            color: #86868b;
+            text-decoration: none;
+        }
+
+        .policy-links-footer a:hover {
+            color: #1d1d1f;
+            text-decoration: underline;
+        }
+
+        .policy-links-footer span {
+            color: #d1d1d6;
+        }
+
+        .footer {
+            background: white;
+            padding: 40px;
+            margin-top: 60px;
+            text-align: center;
+            border-top: 1px solid #e5e5e7;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            font-size: 18px;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+        }
+
+        .footer p {
+            color: #86868b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .footer-links a {
+            color: #1d1d1f;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: #ffd700;
+        }
+
+        @media (max-width: 768px) {
+            .business-description {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .business-description h2 {
+                font-size: 18px;
+            }
+
+            .business-description p {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 30px 24px;
+                margin: 20px auto;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .preset-amounts {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .preset-btn {
+                padding: 14px 8px;
+                font-size: 16px;
+            }
+
+            .footer {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 
 
-<div class="container">
-    <h1>Buy Thank You</h1>
-    <p class="subtitle">Support with a thank you payment</p>
+    <div class="container">
+        <h1>Buy Thank You</h1>
+        <p class="subtitle">Select amount and complete payment</p>
 
-    <div class="amount-section">
-        <div class="section-label">Select Amount</div>
-        <div class="preset-amounts">
-            <button class="preset-btn" data-amount="1">₹1</button>
-            <button class="preset-btn" data-amount="10">₹10</button>
-            <button class="preset-btn" data-amount="100">₹100</button>
-            <button class="preset-btn" data-amount="100">₹1000</button>
-        </div>
-
-        <div class="custom-amount">
-            <label for="customAmount">Or enter custom amount</label>
-            <div class="amount-input-wrapper">
-                <span class="currency-symbol">₹</span>
-                <input type="number" id="customAmount" class="amount-input" placeholder="0" min="1" step="1">
+        <div class="amount-section">
+            <div class="section-label">Select Amount</div>
+            <div class="preset-amounts">
+                <button class="preset-btn" data-amount="1">₹1</button>
+                <button class="preset-btn" data-amount="10">₹10</button>
+                <button class="preset-btn" data-amount="100">₹100</button>
+                <button class="preset-btn" data-amount="1000">₹1000</button>
             </div>
-            <div class="error-message" id="errorMessage">
-                Minimum amount is ₹1
+
+            <div class="custom-amount">
+                <label for="customAmount">Or enter custom amount</label>
+                <div class="amount-input-wrapper">
+                    <span class="currency-symbol">₹</span>
+                    <input 
+                        type="number" 
+                        id="customAmount" 
+                        class="amount-input" 
+                        placeholder="0"
+                        min="1"
+                        step="1"
+                    >
+                </div>
+                <div class="error-message" id="errorMessage">
+                    Minimum amount is ₹1
+                </div>
+            </div>
+        </div>
+
+        <button class="pay-btn" id="payBtn" disabled>Pay Now</button>
+
+        <div class="terms-section">
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="termsCheckbox">
+                <label for="termsCheckbox" class="checkbox-label">
+                    I agree to the <a href="/terms">Terms & Policy</a>
+                </label>
+            </div>
+
+            <div class="policy-links-footer">
+                <a href="/terms">Terms & Conditions</a>
+                <span>•</span>
+                <a href="/privacy">Privacy Policy</a>
+                <span>•</span>
+                <a href="/refund">Refund Policy</a>
+            </div>
+        </div>
+
+        <div class="qr-section" id="qrSection">
+            <div id="qrcode"></div>
+            <p class="qr-instruction">
+                Scan this QR code from any UPI app to pay<br>
+                <span class="qr-amount" id="qrAmount">₹0</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <h3>Buy Thank You</h3>
+            <p>A secure platform for sending monetary appreciation. All payments are processed through secure payment gateways.</p>
+            <p><strong>Contact:</strong> <a href="mailto:buythankyou.service@gmail.com" style="color: #ffd700;">buythankyou.service@gmail.com</a></p>
+            
+            <div class="footer-links">
+                <a href="/terms">Terms & Conditions</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/refund">Refund & Cancellation</a>
+                <a href="/contact">Contact Us</a>
             </div>
         </div>
     </div>
 
-    <button class="pay-btn" id="payBtn" disabled>Pay Now</button>
+    <script>
+        const UPI_ID = 'ramizhasan002@ybl';
+        const UPI_NAME = 'Buy Thank You';
+        
+        let selectedAmount = 0;
+        let qrCodeInstance = null;
 
-    <div class="terms-section">
-        <div class="checkbox-wrapper">
-            <input type="checkbox" id="termsCheckbox">
-            <label for="termsCheckbox" class="checkbox-label">
-                I agree to the <a href="#" id="policyLink">Terms & Policy</a>
-            </label>
-        </div>
-    </div>
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        const customAmountInput = document.getElementById('customAmount');
+        const payBtn = document.getElementById('payBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const qrSection = document.getElementById('qrSection');
+        const qrAmount = document.getElementById('qrAmount');
+        const termsCheckbox = document.getElementById('termsCheckbox');
 
-    <div class="qr-section" id="qrSection">
-        <div id="qrcode"></div>
-        <p class="qr-instruction">
-            Scan this QR code from any UPI app to pay<br>
-            <span class="qr-amount" id="qrAmount">₹0</span>
-        </p>
-    </div>
-</div>
+        // Enable/disable pay button based on terms checkbox
+        termsCheckbox.addEventListener('change', (e) => {
+            payBtn.disabled = !e.target.checked || selectedAmount < 1;
+        });
 
-<!-- Policy Modal -->
-<div class="modal" id="policyModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Terms & Policy</h2>
-            <button class="close-btn" onclick="closeModal('policyModal')">&times;</button>
-        </div>
-        <p><strong>Last Updated: January 2026</strong></p>
+        // Preset amount selection
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const amount = parseInt(btn.dataset.amount);
+                selectedAmount = amount;
+                
+                // Update UI
+                presetBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                customAmountInput.value = '';
+                errorMessage.classList.remove('show');
+                payBtn.disabled = !termsCheckbox.checked;
+                
+                updateQRCode();
+            });
+        });
 
-        <h3>1. Terms & Conditions</h3>
-
-        <p><strong>Service Description:</strong> Buy Thank You is a platform that allows users to buy monetary
-            appreciation ("Thank You") to content creators, service providers, or individuals.</p>
-
-        <p><strong>Payment Terms:</strong></p>
-        <ul>
-            <li>All payments are processed through secure payment gateways</li>
-            <li>Minimum payment amount is ₹1</li>
-            <li>Payments are final once processed</li>
-            <li>You will receive a payment confirmation via email</li>
-        </ul>
-
-        <p><strong>User Responsibilities:</strong></p>
-        <ul>
-            <li>Provide accurate payment information</li>
-            <li>Ensure you have authorization to use the payment method</li>
-            <li>Use the service for legitimate appreciation purposes only</li>
-        </ul>
-
-        <p><strong>Prohibited Activities:</strong></p>
-        <ul>
-            <li>Fraudulent transactions</li>
-            <li>Money laundering or illegal activities</li>
-            <li>Harassment or inappropriate messages</li>
-        </ul>
-
-        <p><strong>Limitation of Liability:</strong> Buy Thank You is not responsible for disputes between payers
-            and recipients. We act solely as a payment facilitator.</p>
-
-        <h3>2. Privacy Policy</h3>
-
-        <p><strong>Information We Collect:</strong></p>
-        <ul>
-            <li><strong>Payment Information:</strong> Transaction amount, payment method, timestamp</li>
-            <li><strong>Contact Information:</strong> Email address (if provided)</li>
-            <li><strong>Usage Data:</strong> IP address, browser type, device information</li>
-        </ul>
-
-        <p><strong>How We Use Your Information:</strong></p>
-        <ul>
-            <li>Process your payments</li>
-            <li>Send payment confirmations</li>
-            <li>Prevent fraud and ensure security</li>
-            <li>Improve our service</li>
-        </ul>
-
-        <p><strong>Information Sharing:</strong></p>
-        <ul>
-            <li>We share payment details with the recipient of your "Thank You"</li>
-            <li>We use third-party payment processors (secure and compliant)</li>
-            <li>We do NOT sell your personal information</li>
-        </ul>
-
-        <p><strong>Data Security:</strong> We use industry-standard encryption and security measures to protect your
-            data. Payment information is handled by PCI-DSS compliant payment processors.</p>
-
-        <p><strong>Your Rights:</strong> You have the right to access, correct, or delete your personal information.
-            Contact us at support@buythankyou.com for requests.</p>
-
-        <h3>3. Refund & Cancellation Policy</h3>
-
-        <p><strong>General Policy:</strong> All payments made through Buy Thank You are considered final and
-            non-refundable, as they represent voluntary appreciation payments.</p>
-
-        <p><strong>Refund Exceptions:</strong> Refunds may be issued in the following cases:</p>
-        <ul>
-            <li><strong>Technical Errors:</strong> If a payment was processed multiple times due to a technical
-                error</li>
-            <li><strong>Unauthorized Transactions:</strong> If you can prove the transaction was unauthorized</li>
-            <li><strong>Payment Gateway Errors:</strong> If the payment failed but amount was deducted</li>
-        </ul>
-
-        <p><strong>Refund Process:</strong></p>
-        <ul>
-            <li>Contact us at support@buythankyou.com within 7 days of the transaction</li>
-            <li>Provide transaction details (ID, amount, date, screenshot)</li>
-            <li>We will review within 3-5 business days</li>
-            <li>Approved refunds will be processed within 7-10 business days</li>
-            <li>Refunds will be credited to the original payment method</li>
-        </ul>
-
-        <p><strong>Non-Refundable Situations:</strong></p>
-        <ul>
-            <li>Change of mind after successful payment</li>
-            <li>Dispute with the recipient</li>
-            <li>Incorrect amount selected (user error)</li>
-        </ul>
-
-        <h3>4. Return Policy</h3>
-
-        <p><strong>Nature of Service:</strong> Buy Thank You is a digital payment service for sending monetary
-            appreciation. Since this is a service-based platform and not a product marketplace, traditional
-            "returns" do not apply.</p>
-
-        <p><strong>What This Means:</strong></p>
-        <ul>
-            <li>There are no physical products to return</li>
-            <li>Payments are digital transactions, not purchasable goods</li>
-            <li>Once a "Thank You" payment is sent, it cannot be "returned" in the traditional sense</li>
-        </ul>
-
-        <p><strong>For Issues:</strong> If you have concerns about a transaction, please refer to our Refund Policy
-            above or contact support@buythankyou.com</p>
-
-        <h3>5. Contact Us</h3>
-        <p>For any questions, concerns, or support requests, please contact us at:<br>
-            <strong>Email:</strong> support@buythankyou.com
-        </p>
-    </div>
-</div>
-
-<script>
-    const UPI_ID = 'ramizhasan002@ybl';
-    const UPI_NAME = 'Buy Thank You';
-
-    let selectedAmount = 0;
-    let qrCodeInstance = null;
-
-    const presetBtns = document.querySelectorAll('.preset-btn');
-    const customAmountInput = document.getElementById('customAmount');
-    const payBtn = document.getElementById('payBtn');
-    const errorMessage = document.getElementById('errorMessage');
-    const qrSection = document.getElementById('qrSection');
-    const qrAmount = document.getElementById('qrAmount');
-    const termsCheckbox = document.getElementById('termsCheckbox');
-
-    // Enable/disable pay button based on terms checkbox
-    termsCheckbox.addEventListener('change', (e) => {
-        payBtn.disabled = !e.target.checked || selectedAmount < 1;
-    });
-
-    // Preset amount selection
-    presetBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const amount = parseInt(btn.dataset.amount);
-            selectedAmount = amount;
-
-            // Update UI
+        // Custom amount input
+        customAmountInput.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value) || 0;
+            selectedAmount = value;
+            
+            // Clear preset selection
             presetBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            customAmountInput.value = '';
-            errorMessage.classList.remove('show');
-            payBtn.disabled = !termsCheckbox.checked;
-
+            
+            // Validate
+            if (value > 0 && value < 1) {
+                errorMessage.classList.add('show');
+                payBtn.disabled = true;
+            } else {
+                errorMessage.classList.remove('show');
+                payBtn.disabled = !termsCheckbox.checked || value < 1;
+            }
+            
             updateQRCode();
         });
-    });
 
-    // Custom amount input
-    customAmountInput.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value) || 0;
-        selectedAmount = value;
-
-        // Clear preset selection
-        presetBtns.forEach(b => b.classList.remove('active'));
-
-        // Validate
-        if (value > 0 && value < 1) {
-            errorMessage.classList.add('show');
-            payBtn.disabled = true;
-        } else {
-            errorMessage.classList.remove('show');
-            payBtn.disabled = !termsCheckbox.checked || value < 1;
+        // Generate UPI link
+        function generateUPILink(amount) {
+            const amountFormatted = amount.toFixed(2);
+            const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}&am=${encodeURIComponent(amountFormatted)}&cu=INR&tn=${encodeURIComponent(UPI_NAME)}`;
+            return upiLink;
         }
 
-        updateQRCode();
-    });
+        // Update QR code
+        function updateQRCode() {
+            if (selectedAmount >= 1) {
+                const upiLink = generateUPILink(selectedAmount);
+                
+                // Clear previous QR code
+                const qrContainer = document.getElementById('qrcode');
+                qrContainer.innerHTML = '';
+                
+                // Generate new QR code
+                qrCodeInstance = new QRCode(qrContainer, {
+                    text: upiLink,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#1d1d1f",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                qrAmount.textContent = `₹${selectedAmount.toFixed(2)}`;
+            }
+        }
 
-    // Generate UPI link
-    function generateUPILink(amount) {
-        const amountFormatted = amount.toFixed(2);
-        const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}&am=${encodeURIComponent(amountFormatted)}&cu=INR&tn=${encodeURIComponent(UPI_NAME)}`;
-        return upiLink;
-    }
+        // Detect device type
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
 
-    // Update QR code
-    function updateQRCode() {
-        if (selectedAmount >= 1) {
+        // Pay button click
+        payBtn.addEventListener('click', () => {
+            if (selectedAmount < 1) {
+                errorMessage.classList.add('show');
+                customAmountInput.focus();
+                return;
+            }
+
+            if (!termsCheckbox.checked) {
+                alert('Please agree to the Terms & Policy to proceed');
+                return;
+            }
+
+            // TODO: Integrate Razorpay payment gateway here
+            // For now, we'll keep the UPI functionality
+            // Replace this section with Razorpay integration
+            
             const upiLink = generateUPILink(selectedAmount);
 
-            // Clear previous QR code
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
+            if (isMobileDevice()) {
+                // Mobile: Open UPI app
+                window.location.href = upiLink;
+            } else {
+                // Desktop: Show QR code
+                qrSection.classList.add('show');
+                qrSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
 
-            // Generate new QR code
-            qrCodeInstance = new QRCode(qrContainer, {
-                text: upiLink,
-                width: 200,
-                height: 200,
-                colorDark: "#1d1d1f",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
+            // RAZORPAY INTEGRATION POINT:
+            // Replace the above code with Razorpay checkout
+            // Example: initiateRazorpayPayment(selectedAmount);
+        });
 
-            qrAmount.textContent = `₹${selectedAmount.toFixed(2)}`;
-        }
-    }
-
-    // Detect device type
-    function isMobileDevice() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
-
-    // Pay button click
-    payBtn.addEventListener('click', () => {
-        if (selectedAmount < 1) {
-            errorMessage.classList.add('show');
-            customAmountInput.focus();
-            return;
+        // Function to integrate Razorpay (placeholder)
+        function initiateRazorpayPayment(amount) {
+            // Razorpay integration will go here
+            // 1. Call your backend to create Razorpay order
+            // 2. Open Razorpay checkout with order details
+            // 3. Handle payment success/failure
+            
+            console.log('Razorpay payment gateway will be integrated here for amount:', amount);
         }
 
-        if (!termsCheckbox.checked) {
-            alert('Please agree to the Terms & Conditions to proceed');
-            return;
-        }
-
-        // TODO: Integrate payment gateway here
-        // For now, we'll keep the UPI functionality
-        // Replace this section with your payment gateway integration
-
-        const upiLink = generateUPILink(selectedAmount);
-
-        if (isMobileDevice()) {
-            // Mobile: Open UPI app
-            window.location.href = upiLink;
-        } else {
-            // Desktop: Show QR code
-            qrSection.classList.add('show');
-            qrSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        // PAYMENT GATEWAY INTEGRATION POINT:
-        // Replace the above code with something like:
-        // initiatePaymentGateway(selectedAmount);
-    });
-
-    // Function to integrate payment gateway (placeholder)
-    function initiatePaymentGateway(amount) {
-        // Example for Razorpay, Stripe, or other gateways:
-        // 1. Call your backend API to create payment order
-        // 2. Get order ID and payment details
-        // 3. Open payment gateway popup/redirect
-        // 4. Handle success/failure callbacks
-
-        console.log('Payment gateway will be integrated here for amount:', amount);
-    }
-
-    // Modal functions
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('show');
-    }
-
-    // Policy link
-    document.getElementById('policyLink').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('policyModal').classList.add('show');
-    });
-
-    // Close modal when clicking outside
-    document.getElementById('policyModal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('policyModal')) {
-            closeModal('policyModal');
-        }
-    });
-
-    // Initialize with first preset amount
-    presetBtns[0].click();
-</script>
-</body>
-
-</html>
+        // Initialize with first preset amount
+        presetBtns[0].click();
+    </script>
 {% endblock %}
